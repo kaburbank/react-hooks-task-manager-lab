@@ -1,19 +1,35 @@
+
 import React, { useState, useId, useContext } from "react";
 import { TaskContext } from "../context/TaskContext";
+import { addTask } from "../context/TaskContext";
 
+// Component for adding a new task
 function TaskForm() {
+  // Access tasks and setTasks from context
+  const {tasks, setTasks} = useContext(TaskContext);
   const [taskName, setTaskName] = useState("");
+  const [taskCompletion, setTaskCompletion] = useState(false);
+  const inputId = useId();
 
+  // Handle form submission to add a new task
   function handleSubmit(e) {
     e.preventDefault();
     if (taskName.trim() === "") return;
+    let newTask = {
+      title: taskName,
+      completed: taskCompletion
+    }
+    addTask(newTask);
+    setTasks(prevTasks => [...prevTasks, newTask]);
     setTaskName("");
-  }
+  };
 
+  // Render the task addition form
   return (
     <form onSubmit={handleSubmit}>
       <label>New Task:</label>
       <input
+        id={inputId}
         type="text"
         value={taskName}
         onChange={(e) => setTaskName(e.target.value)}
@@ -22,6 +38,6 @@ function TaskForm() {
       <button type="submit">Add Task</button>
     </form>
   );
-}
+};
 
 export default TaskForm;
