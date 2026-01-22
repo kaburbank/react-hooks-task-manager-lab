@@ -21,19 +21,24 @@ export function TaskProvider({ children }) {
 // Function to toggle task completion status
 export async function toggleComplete (id, completed) {
   if (id) {
-    const url = `${baseURL}/tasks/${id}`
-    const r = await fetch(url, {
-      method: "PATCH",
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({completed: completed}),
-    });
-    if (r.ok) {
-      const data = await r.json();
-      return data;
+    const url = `${baseURL}/tasks/${id}`;
+    try {
+      const r = await fetch(url, {
+        method: "PATCH",
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({completed: completed}),
+      });
+      if (r.ok) {
+        const data = await r.json();
+        return data;
+      }
+      console.log(`PATCH request failed at ${ url }. Response: ${ r.status } `);
+      return null;
+    } catch (err) {
+      console.error("Error toggling task:", err);
+      return null;
     }
-    console.log(`PATCH request failed at ${ url }. Response: ${ r.status } `);
-    return null;
-  };
+  }
 };
 
 // Function to add a new task
